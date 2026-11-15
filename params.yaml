@@ -24,7 +24,7 @@ elbow:
 
 train:
   algorithm: kmeans           # kmeans | gmm | agglomerative
-  n_clusters: 4               # integer, or "auto" to use the elbow knee
+  n_clusters: 3               # integer, or "auto" to use the elbow knee
   n_init: 10
   random_state: 42
 
