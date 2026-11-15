@@ -2,15 +2,18 @@
   "columns": 18,
   "duplicate_ids": 0,
   "errors": [],
-  "frequency_out_of_range": 0,
-  "frequency_out_of_range_by_column": {},
+  "frequency_out_of_range": 8,
+  "frequency_out_of_range_by_column": {
+    "CASH_ADVANCE_FREQUENCY": 8
+  },
   "negative_values": 0,
-  "null_cells": 313,
+  "null_cells": 314,
   "null_fraction": {
-    "MINIMUM_PAYMENTS": 0.03501
+    "CREDIT_LIMIT": 0.00011,
+    "MINIMUM_PAYMENTS": 0.03497
   },
   "passed": true,
-  "rows": 8941,
-  "rows_with_nulls": 313,
+  "rows": 8950,
+  "rows_with_nulls": 314,
   "unexpected_columns": []
 }

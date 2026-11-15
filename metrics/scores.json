@@ -1,12 +1,12 @@
 {
-  "calinski_harabasz": 2266.936,
-  "calinski_harabasz_ref": 2266.936,
-  "davies_bouldin": 1.68684,
-  "davies_bouldin_ref": 1.68684,
-  "largest_cluster_share": 0.3088,
+  "calinski_harabasz": 2271.362,
+  "calinski_harabasz_ref": 2271.362,
+  "davies_bouldin": 1.66021,
+  "davies_bouldin_ref": 1.66021,
+  "largest_cluster_share": 0.34883,
   "n_clusters": 4,
-  "n_customers": 8941,
-  "silhouette": 0.21726,
-  "silhouette_ref": 0.21726,
-  "smallest_cluster_share": 0.17604
+  "n_customers": 8950,
+  "silhouette": 0.21358,
+  "silhouette_ref": 0.21358,
+  "smallest_cluster_share": 0.16715
 }

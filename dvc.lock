@@ -5,8 +5,8 @@ stages:
     deps:
     - path: data/CC_GENERAL.csv
       hash: md5
-      md5: f9eb425941ac687121f891edf44fa31f
-      size: 893035
+      md5: 9f38ecac62d17b286b138db019dd2616
+      size: 893928
     - path: src/common.py
       hash: md5
       md5: a83c50fb39fb000bdc9b5b899e0d931a
@@ -26,19 +26,19 @@ stages:
     outs:
     - path: metrics/validation.json
       hash: md5
-      md5: 66221c20f9dc5de1be36f3aa3909e398
-      size: 322
+      md5: a157e233c22146b6406545e7bc6c9eb8
+      size: 386
   preprocess:
     cmd: python src/preprocess.py
     deps:
     - path: data/CC_GENERAL.csv
       hash: md5
-      md5: f9eb425941ac687121f891edf44fa31f
-      size: 893035
+      md5: 9f38ecac62d17b286b138db019dd2616
+      size: 893928
     - path: metrics/validation.json
       hash: md5
-      md5: 66221c20f9dc5de1be36f3aa3909e398
-      size: 322
+      md5: a157e233c22146b6406545e7bc6c9eb8
+      size: 386
     - path: src/common.py
       hash: md5
       md5: a83c50fb39fb000bdc9b5b899e0d931a
@@ -60,19 +60,19 @@ stages:
     outs:
     - path: data/processed/features.csv
       hash: md5
-      md5: d98f4e6b6f4f11896fbed3872a1146ef
-      size: 3034232
+      md5: b1102bb311883346855961f695676976
+      size: 3043236
     - path: models/scaler.pkl
       hash: md5
-      md5: 7fad2fb6c7f051f4057fd9568cca83d0
+      md5: 9b664fd5e93bfaefc421478a50d28601
       size: 1231
   elbow:
     cmd: python src/elbow.py
     deps:
     - path: data/processed/features.csv
       hash: md5
-      md5: d98f4e6b6f4f11896fbed3872a1146ef
-      size: 3034232
+      md5: b1102bb311883346855961f695676976
+      size: 3043236
     - path: src/common.py
       hash: md5
       md5: a83c50fb39fb000bdc9b5b899e0d931a
@@ -90,22 +90,22 @@ stages:
     outs:
     - path: metrics/elbow.json
       hash: md5
-      md5: 58bd0131195be3bd9737958f75476137
+      md5: 7e5619abf55e06455d53dc95fde8fd84
       size: 74
     - path: plots/elbow.csv
       hash: md5
-      md5: 5c3fb4675e232db7a2be059469bcd000
-      size: 244
+      md5: 075429d074c7a8e1ed37873b611c7c8f
+      size: 243
   train:
     cmd: python src/train.py
     deps:
     - path: data/processed/features.csv
       hash: md5
-      md5: d98f4e6b6f4f11896fbed3872a1146ef
-      size: 3034232
+      md5: b1102bb311883346855961f695676976
+      size: 3043236
     - path: metrics/elbow.json
       hash: md5
-      md5: 58bd0131195be3bd9737958f75476137
+      md5: 7e5619abf55e06455d53dc95fde8fd84
       size: 74
     - path: src/common.py
       hash: md5
@@ -125,27 +125,27 @@ stages:
     outs:
     - path: data/processed/assignments.csv
       hash: md5
-      md5: 12a37ae218dedda2282d7a9ab4db6b0e
-      size: 80485
+      md5: cdc4ac8b05520d01716c0ed1f845b963
+      size: 80566
     - path: models/model.pkl
       hash: md5
-      md5: 11678df021f7fadb4ca7848b87ebb81f
-      size: 37320
+      md5: 0565705ce0e2f9336d30cf660b9bddec
+      size: 37356
   evaluate:
     cmd: python src/evaluate.py
     deps:
     - path: data/CC_GENERAL.csv
       hash: md5
-      md5: f9eb425941ac687121f891edf44fa31f
-      size: 893035
+      md5: 9f38ecac62d17b286b138db019dd2616
+      size: 893928
     - path: data/processed/assignments.csv
       hash: md5
-      md5: 12a37ae218dedda2282d7a9ab4db6b0e
-      size: 80485
+      md5: cdc4ac8b05520d01716c0ed1f845b963
+      size: 80566
     - path: data/processed/features.csv
       hash: md5
-      md5: d98f4e6b6f4f11896fbed3872a1146ef
-      size: 3034232
+      md5: b1102bb311883346855961f695676976
+      size: 3043236
     - path: src/common.py
       hash: md5
       md5: a83c50fb39fb000bdc9b5b899e0d931a
@@ -174,21 +174,21 @@ stages:
     outs:
     - path: metrics/scores.json
       hash: md5
-      md5: cbf995ae682793cc76a2915b901bf97d
-      size: 303
+      md5: 9ea7312a0779c288423620ce7c865c5b
+      size: 304
     - path: plots/cluster_sizes.csv
       hash: md5
-      md5: afa5b9b5882c71435353717c9e2544df
+      md5: 9a89e5e5b9aa6b18ecf29ad8fc4f075d
       size: 46
     - path: plots/pca_clusters.png
       hash: md5
-      md5: 55edc3d803c3ba2819299f11324dc2bc
-      size: 110875
+      md5: 39419c0e15cf35c147d04c5ea472a8fb
+      size: 109286
     - path: plots/pca_scatter.csv
       hash: md5
-      md5: 1110c50af56881d31e23581be875923a
-      size: 33435
+      md5: 1896b5af1a10a6a5f13afc9bb1132bbe
+      size: 33448
     - path: reports/cluster_profiles.csv
       hash: md5
-      md5: 46d510b43b35e9cf3029fbd27a04b5f3
-      size: 748
+      md5: 4bbff734646296df0538400f35dde98f
+      size: 749
