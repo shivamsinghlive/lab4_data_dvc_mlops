@@ -1,0 +1,33 @@
+# Every value here is tracked by DVC (`dvc params diff`) and can be
+# overridden per experiment with `dvc exp run -S <key>=<value>`.
+
+data:
+  raw_path: data/CC_GENERAL.csv
+  id_column: CUST_ID
+
+validate:
+  # Soft limit: columns with more missing values than this fail the stage.
+  max_null_fraction: 0.05
+  # Minimum number of rows we expect in a usable snapshot.
+  min_rows: 1000
+
+preprocess:
+  impute_strategy: median     # median | mean
+  log_transform: true         # log1p on skewed monetary / count columns
+  clip_quantile: 0.99         # winsorize upper tail; 1.0 disables clipping
+  scaler: standard            # standard | robust | minmax
+
+elbow:
+  k_min: 2
+  k_max: 12
+  random_state: 42
+
+train:
+  algorithm: kmeans           # kmeans | gmm | agglomerative
+  n_clusters: 4               # integer, or "auto" to use the elbow knee
+  n_init: 10
+  random_state: 42
+
+evaluate:
+  scatter_sample: 2000        # points exported for the PCA scatter plot
+  random_state: 42

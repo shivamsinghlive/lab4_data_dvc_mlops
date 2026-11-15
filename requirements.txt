@@ -1,0 +1,9 @@
+# Slimmed down from the original 200-line Airflow freeze: only what this lab imports.
+dvc[gs]==3.67.1
+pandas==3.1.1
+numpy==2.5.5
+scikit-learn==1.9.1
+kneed==0.9.0
+matplotlib==3.11.2
+PyYAML==6.0.3
+pytest==9.2.0
