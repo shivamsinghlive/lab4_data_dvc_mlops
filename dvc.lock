@@ -118,19 +118,19 @@ stages:
     params:
       params.yaml:
         train:
-          algorithm: kmeans
-          n_clusters: 4
+          algorithm: agglomerative
+          n_clusters: 6
           n_init: 10
           random_state: 42
     outs:
     - path: data/processed/assignments.csv
       hash: md5
-      md5: 12a37ae218dedda2282d7a9ab4db6b0e
+      md5: fee240c049bc9dc51f2ba1963e340ec8
       size: 80485
     - path: models/model.pkl
       hash: md5
-      md5: 11678df021f7fadb4ca7848b87ebb81f
-      size: 37320
+      md5: 12fc800060923aecb2c9f524ba7a67d3
+      size: 215526
   evaluate:
     cmd: python src/evaluate.py
     deps:
@@ -140,7 +140,7 @@ stages:
       size: 893035
     - path: data/processed/assignments.csv
       hash: md5
-      md5: 12a37ae218dedda2282d7a9ab4db6b0e
+      md5: fee240c049bc9dc51f2ba1963e340ec8
       size: 80485
     - path: data/processed/features.csv
       hash: md5
@@ -174,21 +174,21 @@ stages:
     outs:
     - path: metrics/scores.json
       hash: md5
-      md5: cbf995ae682793cc76a2915b901bf97d
-      size: 303
+      md5: ebbb3cb5bae7ec1ee3faad17b353e5df
+      size: 304
     - path: plots/cluster_sizes.csv
       hash: md5
-      md5: afa5b9b5882c71435353717c9e2544df
-      size: 46
+      md5: 15f201c0984bb9cec312a70fbabb7ffe
+      size: 60
     - path: plots/pca_clusters.png
       hash: md5
-      md5: 55edc3d803c3ba2819299f11324dc2bc
-      size: 110875
+      md5: 7b33fe5927240df11373e93d4fb10164
+      size: 122657
     - path: plots/pca_scatter.csv
       hash: md5
-      md5: 1110c50af56881d31e23581be875923a
+      md5: a582484beb21e5d1f133204f1a47a4c7
       size: 33435
     - path: reports/cluster_profiles.csv
       hash: md5
-      md5: 46d510b43b35e9cf3029fbd27a04b5f3
-      size: 748
+      md5: 7bcd5cc21b1e2c833275187f3e7753fc
+      size: 963
