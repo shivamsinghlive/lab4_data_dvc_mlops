@@ -14,6 +14,7 @@ from sklearn.metrics import (  # noqa: E402
 )
 
 from common import ROOT, ensure_dir, get_logger, load_params, write_json  # noqa: E402
+from preprocess import build_features  # noqa: E402
 
 log = get_logger("evaluate")
 
@@ -26,12 +27,18 @@ def main() -> None:
     raw = pd.read_csv(ROOT / data_p["raw_path"]).set_index(data_p["id_column"]).loc[X.index]
 
     sizes = labels.value_counts().sort_index()
+    ref, _ = build_features(raw.reset_index(), p["reference"], data_p["id_column"])
+    ref = ref.loc[X.index]
     scores = {
         "n_customers": int(len(X)),
         "n_clusters": int(labels.nunique()),
         "silhouette": round(float(silhouette_score(X, labels)), 5),
         "davies_bouldin": round(float(davies_bouldin_score(X, labels)), 5),
         "calinski_harabasz": round(float(calinski_harabasz_score(X, labels)), 3),
+        # Same labels scored in the fixed reference space -> comparable across preprocessing.
+        "silhouette_ref": round(float(silhouette_score(ref, labels)), 5),
+        "davies_bouldin_ref": round(float(davies_bouldin_score(ref, labels)), 5),
+        "calinski_harabasz_ref": round(float(calinski_harabasz_score(ref, labels)), 3),
         "smallest_cluster_share": round(float(sizes.min() / len(X)), 5),
         "largest_cluster_share": round(float(sizes.max() / len(X)), 5),
     }

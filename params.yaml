@@ -31,3 +31,12 @@ train:
 evaluate:
   scatter_sample: 2000        # points exported for the PCA scatter plot
   random_state: 42
+  # Fixed feature space used for the *_ref metrics. Silhouette etc. computed in
+  # each experiment's own space are not comparable once preprocessing changes
+  # (a min-max space is "tighter" by construction), so model selection uses
+  # these reference-space scores instead.
+  reference:
+    impute_strategy: median
+    log_transform: true
+    clip_quantile: 0.99
+    scaler: standard

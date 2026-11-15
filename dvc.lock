@@ -152,8 +152,12 @@ stages:
       size: 1960
     - path: src/evaluate.py
       hash: md5
-      md5: 539bbe7ad5f7e89fb0445d4349f77821
-      size: 2943
+      md5: 6e7f22a5a2e49b7286490d3dd6af20f6
+      size: 3444
+    - path: src/preprocess.py
+      hash: md5
+      md5: fcda88819906cce1aa701950d3446a15
+      size: 2211
     params:
       params.yaml:
         data:
@@ -162,11 +166,16 @@ stages:
         evaluate:
           scatter_sample: 2000
           random_state: 42
+          reference:
+            impute_strategy: median
+            log_transform: true
+            clip_quantile: 0.99
+            scaler: standard
     outs:
     - path: metrics/scores.json
       hash: md5
-      md5: 3300acdae5a77eff627cb0d8ae95a92e
-      size: 204
+      md5: cbf995ae682793cc76a2915b901bf97d
+      size: 303
     - path: plots/cluster_sizes.csv
       hash: md5
       md5: afa5b9b5882c71435353717c9e2544df

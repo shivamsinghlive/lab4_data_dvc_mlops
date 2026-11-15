@@ -58,6 +58,7 @@ stages:
     - data/processed/features.csv
     - src/common.py
     - src/evaluate.py
+    - src/preprocess.py
     params:
     - data
     - evaluate
