@@ -23,7 +23,7 @@ elbow:
   random_state: 42
 
 train:
-  algorithm: kmeans           # kmeans | gmm | agglomerative
+  algorithm: agglomerative    # kmeans | gmm | agglomerative
   n_clusters: 4               # integer, or "auto" to use the elbow knee
   n_init: 10
   random_state: 42
