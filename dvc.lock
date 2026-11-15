@@ -3,7 +3,7 @@ stages:
   validate:
     cmd: python src/validate.py
     deps:
-    - path: data/CC_GENERAL.csv
+    - path: data/raw/CC_GENERAL.csv
       hash: md5
       md5: f9eb425941ac687121f891edf44fa31f
       size: 893035
@@ -18,7 +18,7 @@ stages:
     params:
       params.yaml:
         data:
-          raw_path: data/CC_GENERAL.csv
+          raw_path: data/raw/CC_GENERAL.csv
           id_column: CUST_ID
         validate:
           max_null_fraction: 0.05
@@ -31,7 +31,7 @@ stages:
   preprocess:
     cmd: python src/preprocess.py
     deps:
-    - path: data/CC_GENERAL.csv
+    - path: data/raw/CC_GENERAL.csv
       hash: md5
       md5: f9eb425941ac687121f891edf44fa31f
       size: 893035
@@ -50,7 +50,7 @@ stages:
     params:
       params.yaml:
         data:
-          raw_path: data/CC_GENERAL.csv
+          raw_path: data/raw/CC_GENERAL.csv
           id_column: CUST_ID
         preprocess:
           impute_strategy: median
@@ -134,10 +134,6 @@ stages:
   evaluate:
     cmd: python src/evaluate.py
     deps:
-    - path: data/CC_GENERAL.csv
-      hash: md5
-      md5: f9eb425941ac687121f891edf44fa31f
-      size: 893035
     - path: data/processed/assignments.csv
       hash: md5
       md5: cd8bcddd43cc741f0b2b9a6b1276869f
@@ -146,6 +142,10 @@ stages:
       hash: md5
       md5: d98f4e6b6f4f11896fbed3872a1146ef
       size: 3034232
+    - path: data/raw/CC_GENERAL.csv
+      hash: md5
+      md5: f9eb425941ac687121f891edf44fa31f
+      size: 893035
     - path: src/common.py
       hash: md5
       md5: a83c50fb39fb000bdc9b5b899e0d931a
@@ -161,7 +161,7 @@ stages:
     params:
       params.yaml:
         data:
-          raw_path: data/CC_GENERAL.csv
+          raw_path: data/raw/CC_GENERAL.csv
           id_column: CUST_ID
         evaluate:
           scatter_sample: 2000

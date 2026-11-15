@@ -2,7 +2,7 @@
 # overridden per experiment with `dvc exp run -S <key>=<value>`.
 
 data:
-  raw_path: data/CC_GENERAL.csv
+  raw_path: data/raw/CC_GENERAL.csv
   id_column: CUST_ID
 
 validate:

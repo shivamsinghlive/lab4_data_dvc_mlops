@@ -2,7 +2,7 @@ stages:
   validate:
     cmd: python src/validate.py
     deps:
-    - data/CC_GENERAL.csv
+    - data/raw/CC_GENERAL.csv
     - src/common.py
     - src/validate.py
     params:
@@ -14,7 +14,7 @@ stages:
   preprocess:
     cmd: python src/preprocess.py
     deps:
-    - data/CC_GENERAL.csv
+    - data/raw/CC_GENERAL.csv
     - metrics/validation.json
     - src/common.py
     - src/preprocess.py
@@ -53,7 +53,7 @@ stages:
   evaluate:
     cmd: python src/evaluate.py
     deps:
-    - data/CC_GENERAL.csv
+    - data/raw/CC_GENERAL.csv
     - data/processed/assignments.csv
     - data/processed/features.csv
     - src/common.py
