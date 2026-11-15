@@ -1,0 +1,135 @@
+$ # --- number of clusters ---
+
+$ dvc exp run --queue -n k3 -S train.n_clusters=3
+Queueing with overrides '{'params.yaml': ['train.n_clusters=3']}'.
+Queued experiment 'k3' for future execution.
+
+$ dvc exp run --queue -n k5 -S train.n_clusters=5
+Queueing with overrides '{'params.yaml': ['train.n_clusters=5']}'.
+Queued experiment 'k5' for future execution.
+
+$ dvc exp run --queue -n k6 -S train.n_clusters=6
+Queueing with overrides '{'params.yaml': ['train.n_clusters=6']}'.
+Queued experiment 'k6' for future execution.
+
+$ dvc exp run --queue -n k8 -S train.n_clusters=8
+Queueing with overrides '{'params.yaml': ['train.n_clusters=8']}'.
+Queued experiment 'k8' for future execution.
+
+$ dvc exp run --queue -n k-auto -S train.n_clusters=auto
+Queueing with overrides '{'params.yaml': ['train.n_clusters=auto']}'.
+Queued experiment 'k-auto' for future execution.
+
+$ # --- algorithms ---
+
+$ dvc exp run --queue -n gmm-k4 -S train.algorithm=gmm
+Queueing with overrides '{'params.yaml': ['train.algorithm=gmm']}'.
+Queued experiment 'gmm-k4' for future execution.
+
+$ dvc exp run --queue -n agglo-k4 -S train.algorithm=agglomerative
+Queueing with overrides '{'params.yaml': ['train.algorithm=agglomerative']}'.
+Queued experiment 'agglo-k4' for future execution.
+
+$ # --- preprocessing ---
+
+$ dvc exp run --queue -n robust-scaler -S preprocess.scaler=robust
+Queueing with overrides '{'params.yaml': ['preprocess.scaler=robust']}'.
+Queued experiment 'robust-scaler' for future execution.
+
+$ dvc exp run --queue -n minmax-scaler -S preprocess.scaler=minmax
+Queueing with overrides '{'params.yaml': ['preprocess.scaler=minmax']}'.
+Queued experiment 'minmax-scaler' for future execution.
+
+$ dvc exp run --queue -n no-log -S preprocess.log_transform=false
+Queueing with overrides '{'params.yaml': ['preprocess.log_transform=false']}'.
+Queued experiment 'no-log' for future execution.
+
+$ dvc exp run --queue -n no-clip -S preprocess.clip_quantile=1.0
+Queueing with overrides '{'params.yaml': ['preprocess.clip_quantile=1.0']}'.
+Queued experiment 'no-clip' for future execution.
+
+$ dvc exp run --queue -n mean-impute -S preprocess.impute_strategy=mean
+Queueing with overrides '{'params.yaml': ['preprocess.impute_strategy=mean']}'.
+Queued experiment 'mean-impute' for future execution.
+
+$ # --- grid search: 2 algorithms x 2 k values = 4 experiments in one command ---
+
+$ dvc exp run --queue -S 'train.algorithm=gmm,agglomerative' -S 'train.n_clusters=5,6'
+Queueing with overrides '{'params.yaml': ['train.algorithm=gmm', 'train.n_clusters=5']}'.
+Queued experiment 'level-coat' for future execution.
+Queueing with overrides '{'params.yaml': ['train.algorithm=gmm', 'train.n_clusters=6']}'.
+Queued experiment 'waney-agio' for future execution.
+Queueing with overrides '{'params.yaml': ['train.algorithm=agglomerative', 'train.n_clusters=5']}'.
+Queued experiment 'naive-conk' for future execution.
+Queueing with overrides '{'params.yaml': ['train.algorithm=agglomerative', 'train.n_clusters=6']}'.
+Queued experiment 'moral-weka' for future execution.
+
+$ dvc queue status
+Task     Name           Created    Status
+d2af797  k3             06:23 PM   Queued
+de9182d  k5             06:23 PM   Queued
+05deb33  k6             06:23 PM   Queued
+5d35780  k8             06:23 PM   Queued
+a1c1550  k-auto         06:23 PM   Queued
+a8edc19  gmm-k4         06:23 PM   Queued
+1ab2b49  agglo-k4       06:23 PM   Queued
+28cd90f  robust-scaler  06:23 PM   Queued
+451c4f5  minmax-scaler  06:23 PM   Queued
+8e20ee6  no-log         06:23 PM   Queued
+724bf9e  no-clip        06:23 PM   Queued
+b850027  mean-impute    06:23 PM   Queued
+401868d  level-coat     06:23 PM   Queued
+051d09d  waney-agio     06:23 PM   Queued
+8c8f234  naive-conk     06:23 PM   Queued
+4b4678e  moral-weka     06:23 PM   Queued
+
+Worker status: 0 active, 0 idle
+
+$ dvc queue start -j 4
+Started '4' new experiments task queue workers.
+
+$ dvc queue status
+Task     Name           Created    Status
+d2af797  k3             06:23 PM   Success
+de9182d  k5             06:23 PM   Success
+05deb33  k6             06:23 PM   Success
+5d35780  k8             06:23 PM   Success
+a1c1550  k-auto         06:23 PM   Success
+a8edc19  gmm-k4         06:23 PM   Success
+1ab2b49  agglo-k4       06:23 PM   Success
+28cd90f  robust-scaler  06:23 PM   Success
+451c4f5  minmax-scaler  06:23 PM   Success
+8e20ee6  no-log         06:23 PM   Success
+724bf9e  no-clip        06:23 PM   Success
+b850027  mean-impute    06:23 PM   Success
+401868d  level-coat     06:23 PM   Success
+051d09d  waney-agio     06:23 PM   Success
+8c8f234  naive-conk     06:23 PM   Success
+4b4678e  moral-weka     06:23 PM   Success
+
+Worker status: 0 active, 0 idle
+
+$ xshow --sort-by silhouette --sort-order desc
+| Experiment                  | frequency_out_of_range   | rows   | knee_k   | calinski_harabasz   | davies_bouldin   | n_clusters   | silhouette   | smallest_cluster_share   | preprocess.impute_strategy   | preprocess.log_transform   | preprocess.clip_quantile   | preprocess.scaler   | train.algorithm   | train.n_clusters   |
+|-----------------------------|--------------------------|--------|----------|---------------------|------------------|--------------|--------------|--------------------------|------------------------------|----------------------------|----------------------------|---------------------|-------------------|--------------------|
+| workspace                   | 0                        | 8941   | 6        | 2266.9              | 1.6868           | 4            | 0.21726      | 0.17604                  | median                       | True                       | 0.99                       | standard            | kmeans            | 4                  |
+| main                        | 0                        | 8941   | 6        | 2266.9              | 1.6868           | 4            | 0.21726      | 0.17604                  | median                       | True                       | 0.99                       | standard            | kmeans            | 4                  |
+| ├── f3cbaf8 [minmax-scaler] | 0                        | 8941   | 5        | 3553.3              | 1.4205           | 4            | 0.2788       | 0.22615                  | median                       | True                       | 0.99                       | minmax              | kmeans            | 4                  |
+| ├── 872eaee [robust-scaler] | 0                        | 8941   | 5        | 3299.5              | 1.3106           | 4            | 0.25867      | 0.13332                  | median                       | True                       | 0.99                       | robust              | kmeans            | 4                  |
+| ├── 7bc85a3 [k3]            | 0                        | 8941   | 6        | 2651                | 1.6801           | 3            | 0.22509      | 0.31999                  | median                       | True                       | 0.99                       | standard            | kmeans            | 3                  |
+| ├── 0030f58 [k5]            | 0                        | 8941   | 6        | 2142.1              | 1.5998           | 5            | 0.21931      | 0.15535                  | median                       | True                       | 0.99                       | standard            | kmeans            | 5                  |
+| ├── 94af67e [k-auto]        | 0                        | 8941   | 6        | 2021.1              | 1.4647           | 6            | 0.21818      | 0.11274                  | median                       | True                       | 0.99                       | standard            | kmeans            | auto               |
+| ├── 33ed65c [k6]            | 0                        | 8941   | 6        | 2021.1              | 1.4647           | 6            | 0.21818      | 0.11274                  | median                       | True                       | 0.99                       | standard            | kmeans            | 6                  |
+| ├── e218fe5 [no-clip]       | 0                        | 8941   | 6        | 2257.9              | 1.6882           | 4            | 0.21664      | 0.1756                   | median                       | True                       | 1                          | standard            | kmeans            | 4                  |
+| ├── 5dd4693 [mean-impute]   | 0                        | 8941   | 6        | 2246.8              | 1.6994           | 4            | 0.21557      | 0.18231                  | mean                         | True                       | 0.99                       | standard            | kmeans            | 4                  |
+| ├── f6fc30b [k8]            | 0                        | 8941   | 6        | 1732.8              | 1.4347           | 8            | 0.21525      | 0.05335                  | median                       | True                       | 0.99                       | standard            | kmeans            | 8                  |
+| ├── e53bbf8 [raw-data-v1]   | 8                        | 8950   | 6        | 2271.4              | 1.6602           | 4            | 0.21358      | 0.16715                  | median                       | True                       | 0.99                       | standard            | kmeans            | 4                  |
+| ├── af41036 [no-log]        | 0                        | 8941   | 5        | 1978.2              | 1.5916           | 4            | 0.19512      | 0.07851                  | median                       | False                      | 0.99                       | standard            | kmeans            | 4                  |
+| ├── b5e575c [gmm-k4]        | 0                        | 8941   | 6        | 1749.5              | 1.8929           | 4            | 0.17707      | 0.18231                  | median                       | True                       | 0.99                       | standard            | gmm               | 4                  |
+| ├── e1d2651 [agglo-k4]      | 0                        | 8941   | 6        | 1842.9              | 1.7085           | 4            | 0.17366      | 0.14238                  | median                       | True                       | 0.99                       | standard            | agglomerative     | 4                  |
+| ├── 2ce432c [waney-agio]    | 0                        | 8941   | 6        | 1409.1              | 2.3354           | 6            | 0.17283      | 0.06431                  | median                       | True                       | 0.99                       | standard            | gmm               | 6                  |
+| ├── c1c06d3 [naive-conk]    | 0                        | 8941   | 6        | 1653.7              | 1.8736           | 5            | 0.16968      | 0.12247                  | median                       | True                       | 0.99                       | standard            | agglomerative     | 5                  |
+| ├── f2182ca [level-coat]    | 0                        | 8941   | 6        | 1379.7              | 2.4643           | 5            | 0.16117      | 0.07124                  | median                       | True                       | 0.99                       | standard            | gmm               | 5                  |
+| └── b386e1d [moral-weka]    | 0                        | 8941   | 6        | 1522                | 1.6892           | 6            | 0.15621      | 0.12247                  | median                       | True                       | 0.99                       | standard            | agglomerative     | 6                  |
+
+

@@ -1,0 +1,58 @@
+$ mkdir -p data/raw && dvc move data/CC_GENERAL.csv data/raw/CC_GENERAL.csv
+
+To track the changes with git, run:
+
+	git add data/CC_GENERAL.csv.dvc data/raw/CC_GENERAL.csv.dvc data/raw/.gitignore
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+$ git status --short
+ D data/.gitignore
+ D data/CC_GENERAL.csv.dvc
+?? data/raw/
+?? docs/
+
+$ cat data/raw/CC_GENERAL.csv.dvc data/raw/.gitignore
+outs:
+- md5: f9eb425941ac687121f891edf44fa31f
+  size: 893035
+  hash: md5
+  path: CC_GENERAL.csv
+/CC_GENERAL.csv
+
+$ sed -i '' 's|raw_path: data/CC_GENERAL.csv|raw_path: data/raw/CC_GENERAL.csv|' params.yaml && sed -i '' 's|- data/CC_GENERAL.csv$|- data/raw/CC_GENERAL.csv|' dvc.yaml && grep -n 'CC_GENERAL' params.yaml dvc.yaml
+params.yaml:5:  raw_path: data/raw/CC_GENERAL.csv
+dvc.yaml:5:    - data/raw/CC_GENERAL.csv
+dvc.yaml:17:    - data/raw/CC_GENERAL.csv
+dvc.yaml:56:    - data/raw/CC_GENERAL.csv
+
+$ dvc repro 2>&1 | grep -E "skipping|Running stage|Restored|lock"
+'data/raw/CC_GENERAL.csv.dvc' didn't change, skipping
+Running stage 'validate':
+Updating lock file 'dvc.lock'
+Running stage 'preprocess':
+Updating lock file 'dvc.lock'
+Stage 'elbow' didn't change, skipping
+Stage 'train' didn't change, skipping
+Running stage 'evaluate':
+Updating lock file 'dvc.lock'
+	git add dvc.lock
+
+$ git diff --stat
+ data/.gitignore         |  1 -
+ data/CC_GENERAL.csv.dvc |  5 -----
+ dvc.lock                | 18 +++++++++---------
+ dvc.yaml                |  6 +++---
+ params.yaml             |  2 +-
+ 5 files changed, 13 insertions(+), 19 deletions(-)
+
+$ git add -A data params.yaml dvc.yaml dvc.lock metrics && git commit -qm "Move raw dataset to data/raw/ with dvc move
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git log --oneline -1
+9f0dd9d Move raw dataset to data/raw/ with dvc move
+
+$ dvc push && git push -q origin main
+Everything is up to date.
+

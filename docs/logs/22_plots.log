@@ -1,0 +1,6 @@
+$ dvc plots show -o docs/plots_model_v1 2>&1 | tail -1
+./docs/plots_model_v1/index.html
+
+$ dvc exp show --rev 3d1c4d2 --no-pager --csv > docs/experiments.csv && wc -l docs/experiments.csv
+      20 docs/experiments.csv
+

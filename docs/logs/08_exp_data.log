@@ -1,0 +1,40 @@
+$ git checkout data-v1 -- data/CC_GENERAL.csv.dvc && dvc checkout data/CC_GENERAL.csv.dvc   # pipeline code at HEAD, data rolled back to v1
+
+$ dvc exp run -n raw-data-v1 2>&1 | grep -E "Running stage|passed=|sizes|scores|Ran experiment|ERROR"
+Running stage 'validate':
+2026-11-15 18:22:53,994 [validate] rows=8950 nulls=314 out_of_range=8 passed=True
+Running stage 'preprocess':
+Running stage 'elbow':
+Running stage 'train':
+2026-11-15 18:22:59,466 [train] algorithm=kmeans k=4 cluster sizes={0: 2426, 1: 1906, 2: 1496, 3: 3122}
+Running stage 'evaluate':
+2026-11-15 18:23:01,486 [evaluate] scores={'n_customers': 8950, 'n_clusters': 4, 'silhouette': 0.21358, 'davies_bouldin': 1.66021, 'calinski_harabasz': 2271.362, 'smallest_cluster_share': 0.16715, 'largest_cluster_share': 0.34883}
+Ran experiment(s): raw-data-v1
+
+$ git checkout HEAD -- data/CC_GENERAL.csv.dvc && dvc checkout && git status --short
+M       data/CC_GENERAL.csv
+ M dvc.lock
+ M metrics/elbow.json
+ M metrics/scores.json
+ M metrics/validation.json
+ M plots/cluster_sizes.csv
+ M plots/elbow.csv
+ M plots/pca_scatter.csv
+ M reports/cluster_profiles.csv
+
+$ git restore dvc.lock metrics plots reports && dvc checkout && git status --short && dvc status
+M       data/processed/assignments.csv
+M       data/processed/features.csv
+M       models/model.pkl
+M       models/scaler.pkl
+M       plots/pca_clusters.png
+Data and pipelines are up to date.
+
+$ xshow   # = dvc exp show --md --drop ".*" --keep "<key metrics & params>"
+| frequency_out_of_range   | rows   | knee_k   | calinski_harabasz   | davies_bouldin   | n_clusters   | silhouette   | smallest_cluster_share   | preprocess.impute_strategy   | preprocess.log_transform   | preprocess.clip_quantile   | preprocess.scaler   | train.algorithm   | train.n_clusters   |
+|--------------------------|--------|----------|---------------------|------------------|--------------|--------------|--------------------------|------------------------------|----------------------------|----------------------------|---------------------|-------------------|--------------------|
+| 0                        | 8941   | 6        | 2266.9              | 1.6868           | 4            | 0.21726      | 0.17604                  | median                       | True                       | 0.99                       | standard            | kmeans            | 4                  |
+| 0                        | 8941   | 6        | 2266.9              | 1.6868           | 4            | 0.21726      | 0.17604                  | median                       | True                       | 0.99                       | standard            | kmeans            | 4                  |
+| 8                        | 8950   | 6        | 2271.4              | 1.6602           | 4            | 0.21358      | 0.16715                  | median                       | True                       | 0.99                       | standard            | kmeans            | 4                  |
+
+

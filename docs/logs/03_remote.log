@@ -1,0 +1,28 @@
+$ dvc remote add -d gcsremote gs://dvc-lab1-cc-segmentation-shivam
+Setting 'gcsremote' as a default remote.
+
+$ dvc remote list
+gcsremote       gs://dvc-lab1-cc-segmentation-shivam    (default)
+
+$ cat .dvc/config
+[core]
+    remote = gcsremote
+['remote "gcsremote"']
+    url = gs://dvc-lab1-cc-segmentation-shivam
+
+$ dvc config core.autostage true   # auto git-add files DVC creates
+
+$ cat .dvc/config
+[core]
+    remote = gcsremote
+    autostage = true
+['remote "gcsremote"']
+    url = gs://dvc-lab1-cc-segmentation-shivam
+
+$ dvc config --unset core.autostage   # keep the README's explicit git-add steps visible
+
+$ git add .dvc/config && git commit -qm "Configure GCS bucket as default DVC remote
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git log --oneline -1
+20fcea6 Configure GCS bucket as default DVC remote
+

@@ -1,0 +1,90 @@
+$ dvc version 2>&1 | head -25
+DVC version: 3.67.1 (pip)
+-------------------------
+Platform: Python 3.13.9 on macOS-26.6.1-arm64-arm-64bit-Mach-O
+Subprojects:
+	dvc_data = 3.18.3
+	dvc_objects = 5.3.1
+	dvc_render = 1.0.2
+	dvc_task = 0.40.2
+	scmrepo = 3.6.2
+Supports:
+	gs (gcsfs = 2026.10.1),
+	http (aiohttp = 3.14.5, aiohttp-retry = 2.9.1),
+	https (aiohttp = 3.14.5, aiohttp-retry = 2.9.1)
+Config:
+	Global: /Users/shivam/Library/Application Support/dvc
+	System: /Library/Application Support/dvc
+Cache types: reflink, hardlink, symlink
+Cache directory: apfs on /dev/disk3s1s1
+Caches: local
+Remotes: gs
+Workspace directory: apfs on /dev/disk3s1s1
+Repo: dvc, git
+Repo.site_cache_dir: /Library/Caches/dvc/repo/a7f607eab5aedb02569f34eda4339814
+
+$ dvc list . --dvc-only -R
+data/processed/assignments.csv
+data/processed/features.csv
+data/raw/CC_GENERAL.csv
+models/model.pkl
+models/scaler.pkl
+plots/pca_clusters.png
+
+$ dvc list . data --rev data-v1 --dvc-only   # the data folder as it was at tag data-v1
+CC_GENERAL.csv
+
+$ dvc list ../git-server/DVC_Lab1.git --dvc-only -R --rev model-v1
+data/CC_GENERAL.csv
+data/processed/assignments.csv
+data/processed/features.csv
+models/model.pkl
+models/scaler.pkl
+plots/pca_clusters.png
+
+$ dvc list https://github.com/raminmohammadi/MLOps Labs/Data_Labs/DVC_Labs/Lab_1 --dvc-only -R   # the upstream lab repo
+data/data.txt
+
+$ dvc diff data-v1 model-v1
+Added:
+    data/processed/assignments.csv
+    data/processed/features.csv
+    models/model.pkl
+    models/scaler.pkl
+    plots/pca_clusters.png
+
+Modified:
+    data/CC_GENERAL.csv
+
+files summary: 5 added, 1 modified
+
+$ dvc diff baseline model-v1 --md
+| Status   | Path                           |
+|----------|--------------------------------|
+| modified | data/processed/assignments.csv |
+| modified | models/model.pkl               |
+| modified | plots/pca_clusters.png         |
+
+
+$ dvc metrics diff baseline model-v1 --md
+| Path                | Metric                 | baseline   | model-v1   | Change   |
+|---------------------|------------------------|------------|------------|----------|
+| metrics/scores.json | calinski_harabasz      | 2266.936   | 2021.106   | -245.83  |
+| metrics/scores.json | calinski_harabasz_ref  | -          | 2021.106   | -        |
+| metrics/scores.json | davies_bouldin         | 1.68684    | 1.46465    | -0.22219 |
+| metrics/scores.json | davies_bouldin_ref     | -          | 1.46465    | -        |
+| metrics/scores.json | largest_cluster_share  | 0.3088     | 0.2455     | -0.0633  |
+| metrics/scores.json | n_clusters             | 4          | 6          | 2        |
+| metrics/scores.json | silhouette             | 0.21726    | 0.21818    | 0.00092  |
+| metrics/scores.json | silhouette_ref         | -          | 0.21818    | -        |
+| metrics/scores.json | smallest_cluster_share | 0.17604    | 0.11274    | -0.0633  |
+
+
+$ dvc params diff baseline model-v1
+Path         Param                               baseline    model-v1
+params.yaml  evaluate.reference.clip_quantile    -           0.99
+params.yaml  evaluate.reference.impute_strategy  -           median
+params.yaml  evaluate.reference.log_transform    -           True
+params.yaml  evaluate.reference.scaler           -           standard
+params.yaml  train.n_clusters                    4           auto
+

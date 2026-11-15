@@ -1,0 +1,45 @@
+$ dvc status
+evaluate:
+	changed deps:
+		modified:           src/evaluate.py
+		modified:           src/preprocess.py
+		params.yaml:
+			modified:           evaluate
+
+$ dvc repro 2>&1 | grep -E "skipping|Running stage|scores="
+'data/CC_GENERAL.csv.dvc' didn't change, skipping
+Stage 'validate' didn't change, skipping
+Stage 'preprocess' didn't change, skipping
+Stage 'elbow' didn't change, skipping
+Stage 'train' didn't change, skipping
+Running stage 'evaluate':
+2026-11-15 18:25:41,409 [evaluate] scores={'n_customers': 8941, 'n_clusters': 4, 'silhouette': 0.21726, 'davies_bouldin': 1.68684, 'calinski_harabasz': 2266.936, 'silhouette_ref': 0.21726, 'davies_bouldin_ref': 1.68684, 'calinski_harabasz_ref': 2266.936, 'smallest_cluster_share': 0.17604, 'largest_cluster_share': 0.3088}
+
+$ dvc params diff
+Path         Param                               HEAD    workspace
+params.yaml  evaluate.reference.clip_quantile    -       0.99
+params.yaml  evaluate.reference.impute_strategy  -       median
+params.yaml  evaluate.reference.log_transform    -       True
+params.yaml  evaluate.reference.scaler           -       standard
+
+$ dvc metrics diff
+Path                 Metric                 HEAD    workspace    Change
+metrics/scores.json  calinski_harabasz_ref  -       2266.936     -
+metrics/scores.json  davies_bouldin_ref     -       1.68684      -
+metrics/scores.json  silhouette_ref         -       0.21726      -
+
+$ python -m pytest -q tests 2>&1 | tail -1
+8 passed in 0.84s
+
+$ git add -A params.yaml dvc.yaml dvc.lock src metrics plots/*.csv reports scripts && git commit -qm "Evaluate: add reference-space metrics so scores are comparable across preprocessing
+
+Silhouette/DB/CH computed in each experiment's own feature space made the
+min-max scaler look best (0.279 vs 0.217) purely because the space changed.
+*_ref metrics score every model's labels in one fixed space.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git log --oneline -1
+3d1c4d2 Evaluate: add reference-space metrics so scores are comparable across preprocessing
+
+$ dvc push
+Everything is up to date.
+

@@ -1,0 +1,7 @@
+$ gcloud storage buckets create gs://dvc-lab1-cc-segmentation-shivam --project=cloud-runner-lab-513420 --location=us-east1 --uniform-bucket-level-access --public-access-prevention
+Creating gs://dvc-lab1-cc-segmentation-shivam/...
+
+$ gcloud storage buckets describe gs://dvc-lab1-cc-segmentation-shivam --format="table(name,location,storage_class,public_access_prevention)"
+NAME                             LOCATION  STORAGE_CLASS  PUBLIC_ACCESS_PREVENTION
+dvc-lab1-cc-segmentation-shivam  US-EAST1                 enforced
+

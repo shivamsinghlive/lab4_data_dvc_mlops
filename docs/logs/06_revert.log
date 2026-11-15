@@ -1,0 +1,42 @@
+$ echo "rows: $(($(wc -l < data/CC_GENERAL.csv) - 1))  md5: $(md5 -q data/CC_GENERAL.csv)"
+rows: 8941  md5: f9eb425941ac687121f891edf44fa31f
+
+$ git checkout -q 30df547   # README method: check out the commit that holds v1 (detached HEAD)
+
+$ dvc status
+data/CC_GENERAL.csv.dvc:
+	changed outs:
+		modified:           data/CC_GENERAL.csv
+
+$ dvc checkout
+M       data/CC_GENERAL.csv
+
+$ echo "rows: $(($(wc -l < data/CC_GENERAL.csv) - 1))  md5: $(md5 -q data/CC_GENERAL.csv)"
+rows: 8950  md5: 9f38ecac62d17b286b138db019dd2616
+
+$ git checkout -q main && dvc checkout
+M       data/CC_GENERAL.csv
+
+$ echo "rows: $(($(wc -l < data/CC_GENERAL.csv) - 1))  md5: $(md5 -q data/CC_GENERAL.csv)"
+rows: 8941  md5: f9eb425941ac687121f891edf44fa31f
+
+$ git checkout data-v1 -- data/CC_GENERAL.csv.dvc   # file-level revert: keep code on main, roll back only the data
+
+$ dvc checkout data/CC_GENERAL.csv.dvc
+M       data/CC_GENERAL.csv
+
+$ echo "rows: $(($(wc -l < data/CC_GENERAL.csv) - 1))  md5: $(md5 -q data/CC_GENERAL.csv)"
+rows: 8950  md5: 9f38ecac62d17b286b138db019dd2616
+
+$ git status --short
+M  data/CC_GENERAL.csv.dvc
+
+$ git checkout HEAD -- data/CC_GENERAL.csv.dvc && dvc checkout
+M       data/CC_GENERAL.csv
+
+$ echo "rows: $(($(wc -l < data/CC_GENERAL.csv) - 1))  md5: $(md5 -q data/CC_GENERAL.csv)"
+rows: 8941  md5: f9eb425941ac687121f891edf44fa31f
+
+$ git status --short && dvc status
+Data and pipelines are up to date.
+

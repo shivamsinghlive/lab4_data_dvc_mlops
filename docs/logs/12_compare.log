@@ -1,0 +1,46 @@
+$ dvc exp diff main k-auto
+Path                 Metric                  main     k-auto    Change
+metrics/scores.json  calinski_harabasz       2266.9   2021.1    -245.83
+metrics/scores.json  calinski_harabasz_ref   2266.9   2021.1    -245.83
+metrics/scores.json  davies_bouldin          1.6868   1.4647    -0.22219
+metrics/scores.json  davies_bouldin_ref      1.6868   1.4647    -0.22219
+metrics/scores.json  largest_cluster_share   0.3088   0.2455    -0.0633
+metrics/scores.json  n_clusters              4        6         2
+metrics/scores.json  silhouette              0.21726  0.21818   0.00092
+metrics/scores.json  silhouette_ref          0.21726  0.21818   0.00092
+metrics/scores.json  smallest_cluster_share  0.17604  0.11274   -0.0633
+
+Path         Param             main    k-auto    Change
+params.yaml  train.n_clusters  4       auto      diff not supported
+
+$ dvc exp diff k-auto minmax-scaler --param-deps
+Path                 Metric                  k-auto    minmax-scaler    Change
+metrics/elbow.json   best_silhouette         0.24699   0.31193          0.06494
+metrics/elbow.json   knee_k                  6         5                -1
+metrics/scores.json  calinski_harabasz       2021.1    3553.3           1532.2
+metrics/scores.json  calinski_harabasz_ref   2021.1    2098.1           76.968
+metrics/scores.json  davies_bouldin          1.4647    1.4205           -0.04411
+metrics/scores.json  davies_bouldin_ref      1.4647    1.7638           0.29911
+metrics/scores.json  largest_cluster_share   0.2455    0.29683          0.05133
+metrics/scores.json  n_clusters              6         4                -2
+metrics/scores.json  silhouette              0.21818   0.2788           0.06062
+metrics/scores.json  silhouette_ref          0.21818   0.20787          -0.01031
+metrics/scores.json  smallest_cluster_share  0.11274   0.22615          0.11341
+
+Path         Param              k-auto    minmax-scaler    Change
+params.yaml  preprocess.scaler  standard  minmax           diff not supported
+params.yaml  train.n_clusters   auto      4                diff not supported
+
+$ dvc plots diff main k-auto minmax-scaler -o docs/plots_compare --split 2>&1 | tail -2
+./docs/plots_compare/index.html
+
+$ ls docs/plots_compare docs/plots_compare/static 2>/dev/null | head -20
+docs/plots_compare:
+index.html
+static
+
+docs/plots_compare/static:
+k-auto_plots_pca_clusters.png
+main_plots_pca_clusters.png
+minmax-scaler_plots_pca_clusters.png
+

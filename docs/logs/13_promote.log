@@ -1,0 +1,35 @@
+$ dvc exp apply k-auto
+Changes for experiment 'k-auto' have been applied to your current workspace.
+
+$ git diff --stat
+ dvc.lock                     |   26 +-
+ metrics/scores.json          |   18 +-
+ params.yaml                  |    2 +-
+ plots/cluster_sizes.csv      |   10 +-
+ plots/pca_scatter.csv        | 3850 +++++++++++++++++++++---------------------
+ reports/cluster_profiles.csv |   10 +-
+ 6 files changed, 1960 insertions(+), 1956 deletions(-)
+
+$ dvc status
+Data and pipelines are up to date.
+
+$ cat reports/cluster_profiles.csv | cut -d, -f1-9
+cluster,customers,BALANCE,BALANCE_FREQUENCY,PURCHASES,ONEOFF_PURCHASES,INSTALLMENTS_PURCHASES,CASH_ADVANCE,PURCHASES_FREQUENCY
+0,1242,3462.94,0.97,1367.75,770.97,597.03,2892.09,0.7
+1,1376,1170.76,0.94,680.72,610.63,70.44,150.68,0.33
+2,1008,37.26,0.34,255.06,144.61,110.74,148.33,0.27
+3,2195,2297.02,0.93,16.36,14.27,2.15,2102.0,0.02
+4,1664,423.49,0.92,691.82,40.18,652.53,36.38,0.85
+5,1456,1557.9,0.97,3363.94,2238.61,1125.33,74.03,0.92
+
+$ git add params.yaml dvc.lock metrics plots/*.csv reports && git commit -qm "Promote experiment k-auto: K-Means with k from elbow knee (k=6)
+
+Davies-Bouldin 1.687 -> 1.465, silhouette 0.2173 -> 0.2182 (reference space),
+smallest segment still 11% of customers. See dvc exp show for the 17-run sweep.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git tag model-v1 && git log --oneline -1
+0b0b4d9 Promote experiment k-auto: K-Means with k from elbow knee (k=6)
+
+$ dvc push
+3 files pushed
+

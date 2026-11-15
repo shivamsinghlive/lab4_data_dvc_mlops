@@ -1,0 +1,41 @@
+$ git clone -q ../git-server/DVC_Lab1.git ../collaborator/DVC_Lab1 && cd ../collaborator/DVC_Lab1 && ls data/ && dvc status 2>&1 | head -6
+CC_GENERAL.csv.dvc
+processed
+validate:
+	changed deps:
+		deleted:            data/CC_GENERAL.csv
+preprocess:
+	changed deps:
+		deleted:            data/CC_GENERAL.csv
+
+$ cd ../collaborator/DVC_Lab1 && dvc pull
+A       data/CC_GENERAL.csv
+A       data/processed/assignments.csv
+A       data/processed/features.csv
+A       models/model.pkl
+A       models/scaler.pkl
+A       plots/pca_clusters.png
+6 files fetched and 6 files added
+
+$ cd ../collaborator/DVC_Lab1 && md5 -q data/CC_GENERAL.csv && dvc status && dvc metrics show
+f9eb425941ac687121f891edf44fa31f
+Data and pipelines are up to date.
+Path                     best_silhouette    best_silhouette_k    calinski_harabasz    calinski_harabasz_ref    columns    davies_bouldin    davies_bouldin_ref    duplicate_ids    frequency_out_of_range    knee_k    largest_cluster_share    n_clusters    n_customers    negative_values    null_cells    null_fraction.MINIMUM_PAYMENTS    passed    rows    rows_with_nulls    silhouette    silhouette_ref    smallest_cluster_share
+metrics/validation.json  -                  -                    -                    -                        18         -                 -                     0                0                         -         -                        -             -              0                  313           0.03501                           True      8941    313                -             -                 -
+metrics/elbow.json       0.24699            2                    -                    -                        -          -                 -                     -                -                         6         -                        -             -              -                  -             -                                 -         -       -                  -             -                 -
+metrics/scores.json      -                  -                    2021.106             2021.106                 -          1.46465           1.46465               -                -                         -         0.2455                   6             8941           -                  -             -                                 -         -       -                  0.21818       0.21818           0.11274
+
+$ cd ../collaborator/DVC_Lab1 && dvc repro   # fully reproducible: nothing to recompute
+'data/CC_GENERAL.csv.dvc' didn't change, skipping
+Stage 'validate' didn't change, skipping
+Stage 'preprocess' didn't change, skipping
+Stage 'elbow' didn't change, skipping
+Stage 'train' didn't change, skipping
+Stage 'evaluate' didn't change, skipping
+Data and pipelines are up to date.
+
+$ cd ../collaborator/DVC_Lab1 && dvc exp pull origin minmax-scaler && dvc exp list --all-commits
+Pulled experiment '['minmax-scaler']' from Git remote 'origin'.
+3d1c4d2:
+	ab4fa19 [minmax-scaler]
+

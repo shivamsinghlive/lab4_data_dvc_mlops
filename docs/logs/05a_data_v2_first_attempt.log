@@ -1,0 +1,59 @@
+$ python scripts/make_dataset_v2.py data/CC_GENERAL.csv
+v2: 8950 -> 8941 rows (9 removed)
+
+$ dvc status
+data/CC_GENERAL.csv.dvc:
+	changed outs:
+		modified:           data/CC_GENERAL.csv
+
+$ dvc diff
+Modified:
+    data/CC_GENERAL.csv
+
+files summary: 1 modified
+
+$ dvc add data/CC_GENERAL.csv
+
+To track the changes with git, run:
+
+	git add data/CC_GENERAL.csv.dvc
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+$ git diff data/CC_GENERAL.csv.dvc
+diff --git a/data/CC_GENERAL.csv.dvc b/data/CC_GENERAL.csv.dvc
+index 8a90337..39be2b0 100644
+--- a/data/CC_GENERAL.csv.dvc
++++ b/data/CC_GENERAL.csv.dvc
+@@ -1,5 +1,5 @@
+ outs:
+-- md5: 9f38ecac62d17b286b138db019dd2616
+-  size: 893928
++- md5: 2fcc055660cd0f96dd3a915f60f33413
++  size: 1010331
+   hash: md5
+   path: CC_GENERAL.csv
+
+$ git add data/CC_GENERAL.csv.dvc && git commit -qm "Dataset v2: drop rows with null CREDIT_LIMIT or CASH_ADVANCE_FREQUENCY > 1
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git tag data-v2 && git log --oneline
+53e84e0 Dataset v2: drop rows with null CREDIT_LIMIT or CASH_ADVANCE_FREQUENCY > 1
+30df547 Track CC_GENERAL.csv v1 (raw Kaggle export, 8950 rows) with DVC
+20fcea6 Configure GCS bucket as default DVC remote
+53f2b9d Scaffold credit-card segmentation project and initialize DVC
+
+$ dvc push
+1 file pushed
+
+$ gcloud storage ls -r gs://dvc-lab1-cc-segmentation-shivam/files/md5/ | grep -v "/:$" | grep .
+gs://dvc-lab1-cc-segmentation-shivam/files/md5/2f/cc055660cd0f96dd3a915f60f33413
+gs://dvc-lab1-cc-segmentation-shivam/files/md5/9f/38ecac62d17b286b138db019dd2616
+
+$ dvc diff data-v1 data-v2
+Modified:
+    data/CC_GENERAL.csv
+
+files summary: 1 modified
+

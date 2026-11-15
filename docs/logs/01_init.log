@@ -1,0 +1,31 @@
+$ git init -b main
+Initialized empty Git repository in ./.git/
+
+$ dvc init
+Initialized DVC repository.
+
+You can now commit the changes to git.
+
+What's next?
+------------
+- Check out the documentation: <https://dvc.org/doc>
+- Get help and share ideas: <https://dvc.org/chat>
+- Star us on GitHub: <https://github.com/treeverse/dvc>
+
+$ git status --short
+A  .dvc/.gitignore
+A  .dvc/config
+A  .dvcignore
+?? .gitignore
+?? data/
+?? params.yaml
+?? requirements.txt
+?? scripts/
+?? src/
+?? tests/
+
+$ git add .dvc .dvcignore .gitignore params.yaml requirements.txt scripts src tests   # data/ is NOT added: DVC will own it
+
+$ git log --oneline
+53f2b9d Scaffold credit-card segmentation project and initialize DVC
+

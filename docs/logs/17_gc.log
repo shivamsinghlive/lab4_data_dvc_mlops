@@ -1,0 +1,58 @@
+$ find .dvc/cache/files -type f | wc -l
+      71
+
+$ dvc gc --workspace --dry 2>&1 | tail -15   # what HEAD-only gc would delete (v1, old experiments...)
+Removing ./.dvc/cache/files/md5/e7/4b4a08f932f60b26a82f96bcb9358e
+Removing ./.dvc/cache/files/md5/41/8b9bfdb718de363f4f3e952b222504
+Removing ./.dvc/cache/files/md5/4a/6e37b69d7f5d1f11e68aa1fb122a60
+Removing ./.dvc/cache/files/md5/12/fc800060923aecb2c9f524ba7a67d3
+Removing ./.dvc/cache/files/md5/12/a37ae218dedda2282d7a9ab4db6b0e
+Removing ./.dvc/cache/files/md5/8c/2a30ae18f3146747b89ce13b371703
+Removing ./.dvc/cache/files/md5/85/990d47647c029413cfee871faeae0a
+Removing ./.dvc/cache/files/md5/71/507e2f37b544b10d331929e18a164a
+Removing ./.dvc/cache/files/md5/2b/67614f0b55b5775a04d19bcd1a7201
+Removing ./.dvc/cache/files/md5/47/4e6971521d56da88c3d79f9b0a6c13
+Removing ./.dvc/cache/files/md5/78/d53fe93e1f46dfba6672825affa651
+Removing ./.dvc/cache/files/md5/7f/677b96d8a0e913cdba6cc144bfa9cd
+Removing ./.dvc/cache/files/md5/22/b903067338aa5965ae0a8f986b0329
+Removed 65 objects from repo cache.
+No unused 'legacy' cache to remove.
+
+$ dvc gc --all-tags --all-branches --all-experiments --force   # keep every tagged version and experiment
+WARNING: This will remove all cache except items used in the workspace and all git branches and tags and all experiments of the current repo.
+Removed 3 objects from repo cache.
+No unused 'legacy' cache to remove.
+
+$ find .dvc/cache/files -type f | wc -l
+      68
+
+$ dvc gc --cloud --all-tags --all-branches --all-experiments --dry 2>&1 | tail -8
+WARNING: This will remove all cache except items used in the workspace and all git branches and tags and all experiments of the current repo.
+No unused 'repo' cache to remove.
+No unused 'legacy' cache to remove.
+Removing dvc-lab1-cc-segmentation-shivam/files/md5/2f/cc055660cd0f96dd3a915f60f33413
+Removed 1 objects from remote.
+I1115 18:28:48.385757 6389425 fork_posix.cc:71] Other threads are currently calling into gRPC, skipping fork() handlers
+I1115 18:28:48.391392 6389650 ev_poll_posix.cc:588] FD from fork parent still in poll list: fd(17, generation: 1)
+No unused cache to remove from remote.
+
+$ gcloud storage ls -r gs://dvc-lab1-cc-segmentation-shivam/files/md5/ | grep -v "/:$" | grep -c .
+21
+
+$ dvc gc --cloud --all-tags --all-branches --all-experiments --force 2>&1 | grep -v "^I1115"
+WARNING: This will remove all cache except items used in the workspace and all git branches and tags and all experiments of the current repo.
+No unused 'repo' cache to remove.
+No unused 'legacy' cache to remove.
+Removed 1 objects from remote.
+No unused cache to remove from remote.
+
+$ gcloud storage ls -r gs://dvc-lab1-cc-segmentation-shivam/files/md5/ | grep -v "/:$" | grep -c .
+20
+
+$ gcloud storage ls gs://dvc-lab1-cc-segmentation-shivam/files/md5/9f/ gs://dvc-lab1-cc-segmentation-shivam/files/md5/f9/   # v1 + v2 still there
+gs://dvc-lab1-cc-segmentation-shivam/files/md5/9f/38ecac62d17b286b138db019dd2616
+gs://dvc-lab1-cc-segmentation-shivam/files/md5/f9/eb425941ac687121f891edf44fa31f
+
+$ dvc status -c
+Cache and remote 'gcsremote' are in sync.
+

@@ -1,0 +1,68 @@
+$ git remote add origin ../git-server/DVC_Lab1.git   # stand-in for GitHub
+
+$ git push -q origin main --tags && git ls-remote origin | head -8
+0b0b4d956e78d507c2e8c5e8c4b9e1b426d0618c	HEAD
+0b0b4d956e78d507c2e8c5e8c4b9e1b426d0618c	refs/heads/main
+fbf8570bc2a85407e1581f496fb30d148de24f5e	refs/tags/baseline
+30df5477528c56b4c9601c89c63a77a49840f90e	refs/tags/data-v1
+647807d2d957f6a937138bb7ad1a4457cb2fc855	refs/tags/data-v2
+0b0b4d956e78d507c2e8c5e8c4b9e1b426d0618c	refs/tags/model-v1
+
+$ dvc exp push origin k-auto minmax-scaler raw-data-v1
+ERROR: Ambiguous name 'minmax-scaler' refers to multiple experiments. Use one of the following full refnames instead:
+
+	refs/exps/3d/1c4d233b53af48983de831b52ccf79d302d202/minmax-scaler
+	refs/exps/fb/f8570bc2a85407e1581f496fb30d148de24f5e/minmax-scaler
+
+$ dvc exp list origin
+
+$ dvc exp list --all-commits | head -30
+3d1c4d2:
+	bca5b55 [no-log]
+	339087b [gmm-k4]
+	015e5cc [k8]
+	8854dd9 [k6]
+	c44212b [agglo-k4]
+	d461e36 [raw-data-v1]
+	4904431 [k3]
+	683466f [mean-impute]
+	91b54cb [muzzy-tics]
+	2c0b9ca [k-auto]
+	343e4c9 [burly-mate]
+	ab4fa19 [minmax-scaler]
+	5823513 [k5]
+	fb1d905 [tense-drop]
+	c109b60 [robust-scaler]
+	beaf9f1 [rowdy-peri]
+	f31b529 [no-clip]
+baseline:
+	0030f58 [k5]
+	f2182ca [level-coat]
+	2ce432c [waney-agio]
+	f6fc30b [k8]
+	33ed65c [k6]
+	e218fe5 [no-clip]
+	94af67e [k-auto]
+	af41036 [no-log]
+	b386e1d [moral-weka]
+	b5e575c [gmm-k4]
+	872eaee [robust-scaler]
+
+$ dvc exp remove --rev baseline   # drop the 17 stale runs scored before the *_ref fix
+Removed experiments: 'agglo-k4', 'gmm-k4', 'k-auto', 'k3', 'k5', 'k6', 'k8', 'level-coat', 'mean-impute', 'minmax-scaler', 'moral-weka', 'naive-conk', 'no-clip', 'no-log', 'raw-data-v1', 'robust-scaler' and 'waney-agio'
+
+$ dvc exp list --all-commits --names-only | wc -l
+      17
+
+$ dvc exp push origin k-auto minmax-scaler raw-data-v1
+Pushed experiment raw-data-v1, minmax-scaler and k-auto to Git remote 'origin'.
+10 files uploaded
+
+$ dvc exp list origin
+
+$ dvc exp list origin --all-commits
+3d1c4d2:
+	k-auto
+	minmax-scaler
+	raw-data-v1
+

@@ -1,0 +1,30 @@
+$ head -101 data/raw/CC_GENERAL.csv > data/raw/sample_100.csv && dvc add data/raw/sample_100.csv && cat data/raw/.gitignore
+
+To track the changes with git, run:
+
+	git add data/raw/sample_100.csv.dvc data/raw/.gitignore
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+/CC_GENERAL.csv
+/sample_100.csv
+
+$ dvc remove data/raw/sample_100.csv.dvc   # stop tracking (file stays on disk)
+
+$ cat data/raw/.gitignore && ls data/raw && rm data/raw/sample_100.csv
+/CC_GENERAL.csv
+CC_GENERAL.csv
+CC_GENERAL.csv.dvc
+sample_100.csv
+
+$ dvc config cache.type; dvc cache dir
+./.dvc/cache
+
+$ dvc unprotect data/raw/CC_GENERAL.csv && ls -l data/raw/CC_GENERAL.csv
+-rw-r--r--@ 1 shivam  staff  893035 Nov 15 18:20 data/raw/CC_GENERAL.csv
+
+$ dvc status && git status --short
+Data and pipelines are up to date.
+?? docs/
+

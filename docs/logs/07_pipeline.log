@@ -1,0 +1,178 @@
+$ dvc stage add -n validate -p data,validate -d src/validate.py -d src/common.py -d data/CC_GENERAL.csv -M metrics/validation.json python src/validate.py
+Added stage 'validate' in 'dvc.yaml'
+
+To track the changes with git, run:
+
+	git add dvc.yaml
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+$ dvc stage add -n preprocess -p data,preprocess -d src/preprocess.py -d src/common.py -d data/CC_GENERAL.csv -d metrics/validation.json -o data/processed/features.csv -o models/scaler.pkl python src/preprocess.py
+Could not create .gitignore entry in ./data/processed/.gitignore. DVC will attempt to create .gitignore entry again when the stage is run.
+Added stage 'preprocess' in 'dvc.yaml'
+
+To track the changes with git, run:
+
+	git add dvc.yaml
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+$ dvc stage add -n elbow -p elbow -d src/elbow.py -d data/processed/features.csv -M metrics/elbow.json -O plots/elbow.csv python src/elbow.py
+Added stage 'elbow' in 'dvc.yaml'
+
+To track the changes with git, run:
+
+	git add dvc.yaml
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+$ dvc stage add -n train -p train -d src/train.py -d data/processed/features.csv -d metrics/elbow.json -o models/model.pkl -o data/processed/assignments.csv python src/train.py
+Could not create .gitignore entry in ./models/.gitignore. DVC will attempt to create .gitignore entry again when the stage is run.
+Added stage 'train' in 'dvc.yaml'
+
+To track the changes with git, run:
+
+	git add dvc.yaml
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+$ dvc stage add -n evaluate -p data,evaluate -d src/evaluate.py -d data/CC_GENERAL.csv -d data/processed/features.csv -d data/processed/assignments.csv -M metrics/scores.json -O plots/cluster_sizes.csv -O plots/pca_scatter.csv -O reports/cluster_profiles.csv -o plots/pca_clusters.png python src/evaluate.py
+Could not create .gitignore entry in ./plots/.gitignore. DVC will attempt to create .gitignore entry again when the stage is run.
+Added stage 'evaluate' in 'dvc.yaml'
+
+To track the changes with git, run:
+
+	git add dvc.yaml
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+$ dvc dag
+                      +-------------------------+                   
+                      | data/CC_GENERAL.csv.dvc |                   
+                      +-------------------------+                   
+                       ****        *            ******              
+                   ****            *                  *****         
+                 **                *                       *****    
+        +----------+               *                            *** 
+        | validate |             **                               * 
+        +----------+           **                                 * 
+                   *         **                                   * 
+                    **     **                                     * 
+                      *   *                                       * 
+                 +------------+                                   * 
+                 | preprocess |                                   * 
+                 +------------+***                                * 
+             ****       *         ***                             * 
+          ***           *            ***                          * 
+        **              *               ****                      * 
++-------+               *                   **                    * 
+| elbow |             **                     *                    * 
++-------+            *                       *                    * 
+         **        **                        *                    * 
+           **    **                          *                    * 
+             *  *                            *                    * 
+          +-------+                          *                  *** 
+          | train |*                       **              *****    
+          +-------+ ****                  *           *****         
+                        ***             **      ******              
+                           ****       **   *****                    
+                               **    *  ***                         
+                             +----------+                           
+                             | evaluate |                           
+                             +----------+                           
+
+$ dvc repro 2>&1 | grep -vE "^\s*$|^[0-9-]+ [0-9:,]+ \[(elbow)\] k="
+'data/CC_GENERAL.csv.dvc' didn't change, skipping
+Running stage 'validate':
+> python src/validate.py
+2026-11-15 18:21:51,888 [validate] rows=8941 nulls=313 out_of_range=0 passed=True
+Generating lock file 'dvc.lock'
+Updating lock file 'dvc.lock'
+Running stage 'preprocess':
+> python src/preprocess.py
+2026-11-15 18:21:53,057 [preprocess] features shape=(8941, 17) scaler=standard log=True clip=0.99
+Updating lock file 'dvc.lock'
+Running stage 'elbow':
+> python src/elbow.py
+2026-11-15 18:21:55,897 [elbow] knee=6 best_silhouette_k=2
+Updating lock file 'dvc.lock'
+Running stage 'train':
+> python src/train.py
+2026-11-15 18:21:57,163 [train] algorithm=kmeans k=4 cluster sizes={0: 2039, 1: 2761, 2: 2567, 3: 1574}
+Updating lock file 'dvc.lock'
+Running stage 'evaluate':
+> python src/evaluate.py
+2026-11-15 18:21:59,057 [evaluate] scores={'n_customers': 8941, 'n_clusters': 4, 'silhouette': 0.21726, 'davies_bouldin': 1.68684, 'calinski_harabasz': 2266.936, 'smallest_cluster_share': 0.17604, 'largest_cluster_share': 0.3088}
+Updating lock file 'dvc.lock'
+To track the changes with git, run:
+	git add plots/.gitignore models/.gitignore data/processed/.gitignore dvc.lock
+To enable auto staging, run:
+	dvc config core.autostage true
+Use `dvc push` to send your updates to remote storage.
+
+$ dvc repro   # second run: everything cached, nothing re-executes
+'data/CC_GENERAL.csv.dvc' didn't change, skipping
+Stage 'validate' didn't change, skipping
+Stage 'preprocess' didn't change, skipping
+Stage 'elbow' didn't change, skipping
+Stage 'train' didn't change, skipping
+Stage 'evaluate' didn't change, skipping
+Data and pipelines are up to date.
+
+$ dvc metrics show
+Path                     best_silhouette    best_silhouette_k    calinski_harabasz    columns    davies_bouldin    duplicate_ids    frequency_out_of_range    knee_k    largest_cluster_share    n_clusters    n_customers    negative_values    null_cells    null_fraction.MINIMUM_PAYMENTS    passed    rows    rows_with_nulls    silhouette    smallest_cluster_share
+metrics/validation.json  -                  -                    -                    18         -                 0                0                         -         -                        -             -              0                  313           0.03501                           True      8941    313                -             -
+metrics/elbow.json       0.24699            2                    -                    -          -                 -                -                         6         -                        -             -              -                  -             -                                 -         -       -                  -             -
+metrics/scores.json      -                  -                    2266.936             -          1.68684           -                -                         -         0.3088                   4             8941           -                  -             -                                 -         -       -                  0.21726       0.17604
+
+$ dvc status
+Data and pipelines are up to date.
+
+$ git status --short
+?? data/processed/
+?? dvc.lock
+?? dvc.yaml
+?? metrics/
+?? models/
+?? plots/
+?? reports/
+
+$ dvc dag --mermaid
+flowchart TD
+	node1["data/CC_GENERAL.csv.dvc"]
+	node2["elbow"]
+	node3["evaluate"]
+	node4["preprocess"]
+	node5["train"]
+	node6["validate"]
+	node1-->node3
+	node1-->node4
+	node1-->node6
+	node2-->node5
+	node4-->node2
+	node4-->node3
+	node4-->node5
+	node5-->node3
+	node6-->node4
+
+$ git add dvc.yaml dvc.lock data/processed/.gitignore models/.gitignore plots/.gitignore metrics plots/*.csv reports && git commit -qm "Add 5-stage segmentation pipeline (validate -> preprocess -> elbow -> train -> evaluate)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git tag baseline && git log --oneline -1
+fbf8570 Add 5-stage segmentation pipeline (validate -> preprocess -> elbow -> train -> evaluate)
+
+$ dvc push
+5 files pushed
+
+$ dvc status -c
+Cache and remote 'gcsremote' are in sync.
+

@@ -1,0 +1,25 @@
+$ cd ../collaborator/DVC_Lab1 && rm -rf .dvc/cache data/CC_GENERAL.csv && dvc status | head -4   # simulate a machine with no cache
+validate:
+	changed deps:
+		deleted:            data/CC_GENERAL.csv
+preprocess:
+
+$ cd ../collaborator/DVC_Lab1 && dvc fetch data/CC_GENERAL.csv.dvc   # download into cache only
+1 file fetched
+
+$ cd ../collaborator/DVC_Lab1 && ls data/ && find .dvc/cache -type f | sed 's|.*/cache/||'
+CC_GENERAL.csv.dvc
+processed
+files/md5/f9/eb425941ac687121f891edf44fa31f
+
+$ cd ../collaborator/DVC_Lab1 && dvc checkout data/CC_GENERAL.csv.dvc && md5 -q data/CC_GENERAL.csv   # link cache -> workspace
+A       data/CC_GENERAL.csv
+f9eb425941ac687121f891edf44fa31f
+
+$ cd ../collaborator/DVC_Lab1 && dvc status -c
+	deleted:            plots/pca_clusters.png
+	deleted:            models/scaler.pkl
+	deleted:            data/processed/assignments.csv
+	deleted:            models/model.pkl
+	deleted:            data/processed/features.csv
+
