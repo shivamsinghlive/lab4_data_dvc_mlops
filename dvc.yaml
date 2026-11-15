@@ -1,0 +1,96 @@
+stages:
+  validate:
+    cmd: python src/validate.py
+    deps:
+    - data/CC_GENERAL.csv
+    - src/common.py
+    - src/validate.py
+    params:
+    - data
+    - validate
+    metrics:
+    - metrics/validation.json:
+        cache: false
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - data/CC_GENERAL.csv
+    - metrics/validation.json
+    - src/common.py
+    - src/preprocess.py
+    params:
+    - data
+    - preprocess
+    outs:
+    - data/processed/features.csv
+    - models/scaler.pkl
+  elbow:
+    cmd: python src/elbow.py
+    deps:
+    - data/processed/features.csv
+    - src/common.py
+    - src/elbow.py
+    params:
+    - elbow
+    outs:
+    - plots/elbow.csv:
+        cache: false
+    metrics:
+    - metrics/elbow.json:
+        cache: false
+  train:
+    cmd: python src/train.py
+    deps:
+    - data/processed/features.csv
+    - metrics/elbow.json
+    - src/common.py
+    - src/train.py
+    params:
+    - train
+    outs:
+    - data/processed/assignments.csv
+    - models/model.pkl
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - data/CC_GENERAL.csv
+    - data/processed/assignments.csv
+    - data/processed/features.csv
+    - src/common.py
+    - src/evaluate.py
+    params:
+    - data
+    - evaluate
+    outs:
+    - plots/cluster_sizes.csv:
+        cache: false
+    - plots/pca_clusters.png
+    - plots/pca_scatter.csv:
+        cache: false
+    - reports/cluster_profiles.csv:
+        cache: false
+    metrics:
+    - metrics/scores.json:
+        cache: false
+plots:
+- Elbow curve (inertia vs k):
+    template: linear
+    x: k
+    y:
+      plots/elbow.csv: inertia
+- Silhouette vs k:
+    template: linear
+    x: k
+    y:
+      plots/elbow.csv: silhouette
+- Cluster sizes:
+    template: bar_horizontal
+    x: customers
+    y:
+      plots/cluster_sizes.csv: cluster
+- PCA projection of segments:
+    template: scatter
+    x: pc1
+    y:
+      plots/pca_scatter.csv: pc2
+- plots/pca_clusters.png

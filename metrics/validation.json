@@ -1,0 +1,16 @@
+{
+  "columns": 18,
+  "duplicate_ids": 0,
+  "errors": [],
+  "frequency_out_of_range": 0,
+  "frequency_out_of_range_by_column": {},
+  "negative_values": 0,
+  "null_cells": 313,
+  "null_fraction": {
+    "MINIMUM_PAYMENTS": 0.03501
+  },
+  "passed": true,
+  "rows": 8941,
+  "rows_with_nulls": 313,
+  "unexpected_columns": []
+}

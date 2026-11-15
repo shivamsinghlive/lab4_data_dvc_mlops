@@ -1,0 +1,185 @@
+schema: '2.0'
+stages:
+  validate:
+    cmd: python src/validate.py
+    deps:
+    - path: data/CC_GENERAL.csv
+      hash: md5
+      md5: f9eb425941ac687121f891edf44fa31f
+      size: 893035
+    - path: src/common.py
+      hash: md5
+      md5: a83c50fb39fb000bdc9b5b899e0d931a
+      size: 1960
+    - path: src/validate.py
+      hash: md5
+      md5: 70c14cbfde96be18fe601d5817551b0d
+      size: 2749
+    params:
+      params.yaml:
+        data:
+          raw_path: data/CC_GENERAL.csv
+          id_column: CUST_ID
+        validate:
+          max_null_fraction: 0.05
+          min_rows: 1000
+    outs:
+    - path: metrics/validation.json
+      hash: md5
+      md5: 66221c20f9dc5de1be36f3aa3909e398
+      size: 322
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - path: data/CC_GENERAL.csv
+      hash: md5
+      md5: f9eb425941ac687121f891edf44fa31f
+      size: 893035
+    - path: metrics/validation.json
+      hash: md5
+      md5: 66221c20f9dc5de1be36f3aa3909e398
+      size: 322
+    - path: src/common.py
+      hash: md5
+      md5: a83c50fb39fb000bdc9b5b899e0d931a
+      size: 1960
+    - path: src/preprocess.py
+      hash: md5
+      md5: fcda88819906cce1aa701950d3446a15
+      size: 2211
+    params:
+      params.yaml:
+        data:
+          raw_path: data/CC_GENERAL.csv
+          id_column: CUST_ID
+        preprocess:
+          impute_strategy: median
+          log_transform: true
+          clip_quantile: 0.99
+          scaler: standard
+    outs:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: d98f4e6b6f4f11896fbed3872a1146ef
+      size: 3034232
+    - path: models/scaler.pkl
+      hash: md5
+      md5: 7fad2fb6c7f051f4057fd9568cca83d0
+      size: 1231
+  elbow:
+    cmd: python src/elbow.py
+    deps:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: d98f4e6b6f4f11896fbed3872a1146ef
+      size: 3034232
+    - path: src/common.py
+      hash: md5
+      md5: a83c50fb39fb000bdc9b5b899e0d931a
+      size: 1960
+    - path: src/elbow.py
+      hash: md5
+      md5: 831fb6bf97e8e112df91453e0dcd7e86
+      size: 1500
+    params:
+      params.yaml:
+        elbow:
+          k_min: 2
+          k_max: 12
+          random_state: 42
+    outs:
+    - path: metrics/elbow.json
+      hash: md5
+      md5: 58bd0131195be3bd9737958f75476137
+      size: 74
+    - path: plots/elbow.csv
+      hash: md5
+      md5: 5c3fb4675e232db7a2be059469bcd000
+      size: 244
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: d98f4e6b6f4f11896fbed3872a1146ef
+      size: 3034232
+    - path: metrics/elbow.json
+      hash: md5
+      md5: 58bd0131195be3bd9737958f75476137
+      size: 74
+    - path: src/common.py
+      hash: md5
+      md5: a83c50fb39fb000bdc9b5b899e0d931a
+      size: 1960
+    - path: src/train.py
+      hash: md5
+      md5: 739122bb6e508c5020aa0ecbd7e6cc1d
+      size: 1788
+    params:
+      params.yaml:
+        train:
+          algorithm: kmeans
+          n_clusters: 4
+          n_init: 10
+          random_state: 42
+    outs:
+    - path: data/processed/assignments.csv
+      hash: md5
+      md5: 12a37ae218dedda2282d7a9ab4db6b0e
+      size: 80485
+    - path: models/model.pkl
+      hash: md5
+      md5: 11678df021f7fadb4ca7848b87ebb81f
+      size: 37320
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/CC_GENERAL.csv
+      hash: md5
+      md5: f9eb425941ac687121f891edf44fa31f
+      size: 893035
+    - path: data/processed/assignments.csv
+      hash: md5
+      md5: 12a37ae218dedda2282d7a9ab4db6b0e
+      size: 80485
+    - path: data/processed/features.csv
+      hash: md5
+      md5: d98f4e6b6f4f11896fbed3872a1146ef
+      size: 3034232
+    - path: src/common.py
+      hash: md5
+      md5: a83c50fb39fb000bdc9b5b899e0d931a
+      size: 1960
+    - path: src/evaluate.py
+      hash: md5
+      md5: 539bbe7ad5f7e89fb0445d4349f77821
+      size: 2943
+    params:
+      params.yaml:
+        data:
+          raw_path: data/CC_GENERAL.csv
+          id_column: CUST_ID
+        evaluate:
+          scatter_sample: 2000
+          random_state: 42
+    outs:
+    - path: metrics/scores.json
+      hash: md5
+      md5: 3300acdae5a77eff627cb0d8ae95a92e
+      size: 204
+    - path: plots/cluster_sizes.csv
+      hash: md5
+      md5: afa5b9b5882c71435353717c9e2544df
+      size: 46
+    - path: plots/pca_clusters.png
+      hash: md5
+      md5: 55edc3d803c3ba2819299f11324dc2bc
+      size: 110875
+    - path: plots/pca_scatter.csv
+      hash: md5
+      md5: 1110c50af56881d31e23581be875923a
+      size: 33435
+    - path: reports/cluster_profiles.csv
+      hash: md5
+      md5: 46d510b43b35e9cf3029fbd27a04b5f3
+      size: 748
