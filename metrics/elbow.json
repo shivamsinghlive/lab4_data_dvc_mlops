@@ -1,5 +1,5 @@
 {
-  "best_silhouette": 0.24699,
-  "best_silhouette_k": 2,
-  "knee_k": 6
+  "best_silhouette": 0.38713,
+  "best_silhouette_k": 3,
+  "knee_k": 5
 }
