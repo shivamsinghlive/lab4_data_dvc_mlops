@@ -13,7 +13,7 @@ validate:
 
 preprocess:
   impute_strategy: median     # median | mean
-  log_transform: true         # log1p on skewed monetary / count columns
+  log_transform: false        # log1p on skewed monetary / count columns
   clip_quantile: 0.99         # winsorize upper tail; 1.0 disables clipping
   scaler: standard            # standard | robust | minmax
 
